@@ -1,5 +1,5 @@
 # Installation
-cd /eva-api
-npm install
+* cd /eva-api
+* npm install
 # Starten
-npm start
+* npm start

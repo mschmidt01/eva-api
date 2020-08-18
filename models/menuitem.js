@@ -9,6 +9,6 @@ const MenuItemSchema = new mongoose.Schema({
     Ingredients: String,
     Additive: String,
     MenuItemPrice: Number,
-});
+}, {collection: 'MENUITEM'});
 const MenuItem = mongoose.model("MenuItem", MenuItemSchema);
 module.exports = MenuItem;

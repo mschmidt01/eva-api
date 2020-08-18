@@ -6,6 +6,6 @@ const OrderItemSchema = new mongoose.Schema({
     Quantity: Number,
     StatusServed: Boolean,
     MenuItemId: String,
-});
+}, {collection: 'orderitem'});
 const OrderItem = mongoose.model("OrderItem", OrderItemSchema);
 module.exports = OrderItem;

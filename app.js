@@ -6,7 +6,13 @@ var logger = require('morgan');
 var cors = require("cors");
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var categoryRouter = require('./routes/category');
+var customerRouter = require('./routes/customer');
+var menuItemRouter = require('./routes/menuitem');
+var orderRouter = require('./routes/order');
+var orderItemRouter = require('./routes/orderitem');
+var tableRouter = require('./routes/table');
+var userRouter = require('./routes/user');
 
 var app = express();
 
@@ -21,6 +27,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use(userRouter);
+app.use(categoryRouter);
+app.use(customerRouter);
+app.use(menuItemRouter);
+app.use(orderRouter);
+app.use(orderItemRouter);
+app.use(tableRouter);
 
 module.exports = app;

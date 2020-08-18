@@ -5,6 +5,6 @@ const TableSchema = new mongoose.Schema({
     TableName: String,
     QRCode: String,
     waitressCalled: Boolean,
-});
+}, {collection: 'table'});
 const Table = mongoose.model("Table", TableSchema);
 module.exports = Table;

@@ -4,6 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("cors");
+var session = require('express-session')
+const MongoStore = require('connect-mongo')(session);
+
 
 var indexRouter = require('./routes/index');
 var categoryRouter = require('./routes/category');
@@ -23,6 +26,12 @@ mongoose.connect('mongodb+srv://eva_user:eva-i-ss20@cluster0.vrfwg.mongodb.net/e
 });
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+}))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 

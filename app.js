@@ -6,7 +6,7 @@ var logger = require('morgan');
 var cors = require("cors");
 var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
-
+var passport = require('passport')
 
 var indexRouter = require('./routes/index');
 var categoryRouter = require('./routes/category');
@@ -34,6 +34,10 @@ app.use(session({
 }))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
+require('./config/passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use(userRouter);

@@ -1,6 +1,7 @@
 const express = require('express');
 const Table = require('../models/table');
 const app = express();
+const { v4: uuidv4 } = require('uuid');
 
 app.get('/tables', async (req, res) => {
   const tables = await Table.find({});
@@ -13,13 +14,17 @@ app.get('/tables', async (req, res) => {
 });
 
 app.post('/table', async (req, res) => {
-    const table = new Table(req.body);
-  
+    let table = new Table(req.body);
+    
     try {
-      await table.save();
-      res.send(table);
+      let tmp = await table.save();
+      let secret = uuidv4();
+      tmp.QRCodeLink = 'http://localhost:3006/?table='+ tmp._id + '&s=' + secret;
+      tmp.secret =  secret; 
+      await tmp.save()
+      res.send(tmp);
     } catch (err) {
-      res.status(500).send(err);
+      res.status(500).send(err.message);
     }
   });
 

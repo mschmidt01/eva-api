@@ -1,7 +1,7 @@
 var express = require('express');
 const mongoose = require('mongoose');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+//var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("cors");
 var session = require('express-session')
@@ -16,6 +16,8 @@ var orderRouter = require('./routes/order');
 var orderItemRouter = require('./routes/orderitem');
 var tableRouter = require('./routes/table');
 var userRouter = require('./routes/user');
+var cartRouter = require('./routes/cart');
+
 
 var app = express();
 
@@ -25,15 +27,17 @@ mongoose.connect('mongodb+srv://eva_user:eva-i-ss20@cluster0.vrfwg.mongodb.net/e
   useNewUrlParser: true
 });
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+//app.use(cookieParser());
 app.use(session({
   secret: 'keyboard cat',
-  resave: false,
+  resave: true,
+  cookie: { maxAge: 1000 * 60 * 24 * 14 },
+  rolling: true,
   saveUninitialized: true,
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }))
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+app.use(cors({origin: 'http://localhost:3006' , credentials :  true})); //TODO set url in .env
 require('./config/passport');
 
 app.use(passport.initialize());
@@ -47,5 +51,6 @@ app.use(menuItemRouter);
 app.use(orderRouter);
 app.use(orderItemRouter);
 app.use(tableRouter);
+app.use(cartRouter);
 
 module.exports = app;

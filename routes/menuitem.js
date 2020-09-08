@@ -34,7 +34,7 @@ app.post('/menuitem', async (req, res) => {
     }
   })
 
-  app.patch('/menuitem/:id', async (req, res) => {
+  app.patch('/menuitem', async (req, res) => {
     try {
       const menuitem =  await MenuItem.findByIdAndUpdate(req.params.id, req.body)
       await MenuItem.save()

@@ -5,6 +5,11 @@ const mongoose = require('mongoose');
 
 app.get('/cart', async (req, res) => {
   let cart = req.session.cart;
+  let price = 0.0;
+  for (let i = 0; i < cart.cartitems.length; i++) {
+    price += cart.cartitems[i].menuitemprice * cart.cartitems[i].qty;
+  }
+  cart.price = price;
   try {
     res.send({status: "success", data:JSON.stringify(cart)});
   } catch (err) {
@@ -30,14 +35,11 @@ app.post('/cart', async (req, res) => {
         item.qty = 1;
         item.menuitemprice = parseFloat(parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]).toFixed(2));
         cart.cartitems.push(item);
-        cart.price +=  item.menuitemprice;
         
       })
     } else {
       item.qty++;
-      cart.price += item.menuitemprice;
     }
-    cart.price = parseFloat(cart.price.toFixed(2));
     req.session.cart = cart;
     console.log(req.session.cart);
     res.send({
@@ -81,12 +83,41 @@ app.delete('/cart/:id', async (req, res) => {
   }
 })
 
-app.patch('/cart/:id', async (req, res) => {
+app.patch('/cart', async (req, res) => {
   try {
-    const menuitem = await MenuItem.findByIdAndUpdate(req.params.id, req.body)
-    await MenuItem.save()
-    res.send(menuitem)
-  } catch (err) {
+  let id = req.body.menuItemId;
+  let qty = req.body.qty;
+  let cart = req.session.cart;
+  let item = cart.cartitems.find(item => item._id === id);
+  if(qty === 0){
+    const filterInPlace = (array, predicate) => {
+      let end = 0;
+  
+      for (let i = 0; i < array.length; i++) {
+          const obj = array[i];
+  
+          if (predicate(obj)) {
+              array[end++] = obj;
+          }
+      }
+  
+      array.length = end;
+  };
+  
+  const toDelete = new Set([item._id]);
+  
+  filterInPlace(cart.cartitems, obj => !toDelete.has(obj._id));
+  res.status(200).send();
+  }else{
+    console.log(cart);
+    item.qty = qty;
+    req.session.cart = cart;
+    console.log(cart);
+    res.status(200).send();
+  }
+  
+
+} catch (err) {
     res.status(500).send(err)
   }
 })

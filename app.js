@@ -37,7 +37,7 @@ app.use(session({
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }))
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({origin: 'http://localhost:3006' , credentials :  true})); //TODO set url in .env
+app.use(cors({origin: ['http://localhost:3006', 'http://localhost:3000'] , credentials :  true})); //TODO set url in .env
 require('./config/passport');
 
 app.use(passport.initialize());

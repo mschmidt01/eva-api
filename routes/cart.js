@@ -5,24 +5,8 @@ const mongoose = require('mongoose');
 
 app.get('/cart', async (req, res) => {
   let cart = req.session.cart;
-  let cartContent = [];
-  let mongooseIds = [];
-  if (cart !== undefined) {
-    for(let i = 0; i < cart.length; i++){
-      let item = cart[i];
-      let id = mongoose.Types.ObjectId(item.id);
-      mongooseIds.push(id);
-    }
-    MenuItem.find({
-      '_id': { $in: mongooseIds}
-  }, function(err, docs){
-       console.log(docs);
-  });
-  }
-  const menuitems = await MenuItem.find({});
-
   try {
-    res.send(menuitems);
+    res.send({status: "success", data:cart});
   } catch (err) {
     res.status(500).send(err);
   }
@@ -32,22 +16,34 @@ app.post('/cart', async (req, res) => {
   try {
     let id = req.body.menuItemId;
     let cart = req.session.cart;
-    if (cart === undefined) {
-      cart = [];
+    if (cart == null) {
+      cart = {
+        cartitems: [],
+        price: 0.0,
+      };
     }
-    let item = cart.find(item => item.id === id);
-    if (item === undefined) {
-      item = { id: id, qty: 1 };
-      cart.push(item);
+    let item = cart.cartitems.find(item => item._id === id);
+    if (item == null) {
+      await MenuItem.findById(id, function (err, doc) {
+        if (doc == null) res.status(404).send("No item found")
+        let item = doc.toObject();
+        item.qty = 1;
+        item.menuitemprice = parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]);
+        cart.cartitems.push(item);
+        cart.price +=  item.menuitemprice;
+        
+      })
     } else {
       item.qty++;
+      cart.price += item.menuitemprice;
     }
     req.session.cart = cart;
+    console.log(req.session.cart);
     res.send({
       status: "success",
     });
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err.message);
   }
 });
 
@@ -56,15 +52,17 @@ app.get('/cart/count', async (req, res) => {
     let cart = req.session.cart;
     let count = 0;
     console.log(cart);
-    if (cart !== undefined) {
-      for(let i = 0; i < cart.length; i++){
-        let item = cart[i];
+    if (cart.cartitems !== undefined) {
+      for (let i = 0; i < cart.cartitems.length; i++) {
+        let item =  cart.cartitems[i];
         count += item.qty;
       }
     }
-    
     res.send({
-      status: "success", data:{count: count},
+      status: "success",
+      data: {
+        count: count
+      },
     });
   } catch (err) {
     res.status(500).send(err);

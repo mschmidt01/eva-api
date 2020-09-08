@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 app.get('/cart', async (req, res) => {
   let cart = req.session.cart;
   try {
-    res.send({status: "success", data:cart});
+    res.send({status: "success", data:JSON.stringify(cart)});
   } catch (err) {
     res.status(500).send(err);
   }
@@ -28,7 +28,7 @@ app.post('/cart', async (req, res) => {
         if (doc == null) res.status(404).send("No item found")
         let item = doc.toObject();
         item.qty = 1;
-        item.menuitemprice = parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]);
+        item.menuitemprice = parseFloat(parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]).toFixed(2));
         cart.cartitems.push(item);
         cart.price +=  item.menuitemprice;
         
@@ -37,6 +37,7 @@ app.post('/cart', async (req, res) => {
       item.qty++;
       cart.price += item.menuitemprice;
     }
+    cart.price = parseFloat(cart.price.toFixed(2));
     req.session.cart = cart;
     console.log(req.session.cart);
     res.send({

@@ -13,13 +13,26 @@ app.get('/orders', async (req, res) => {
 });
 
 app.post('/order', async (req, res) => {
-    const order = new Order(req.body);
+    let items = req.body.cartItems;
+    let tableId = req.body.tableId;
+    let timeStamp = req.body.timeStamp;
+    // let secret = req.body.secret; TODO: Use Secret to prevent trolls
+    let orderContent = {
+      TableId: tableId, 
+    // CustomerId: String, //TODO: CustomerID?
+    OrderItems: items,
+    StatusPayed: false,
+    OrderTimeStamp: timeStamp,
+    }
+    const order = new Order(orderContent);
   
     try {
       await order.save();
-      res.send(order);
+      req.session.cart = null;
+      res.send({status: 'success', data: {order: order}});
+    
     } catch (err) {
-      res.status(500).send(err);
+      res.status(500).send({status: 'error'});
     }
   });
 

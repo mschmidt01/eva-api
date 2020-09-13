@@ -9,7 +9,9 @@ app.get('/cart', async (req, res) => {
   for (let i = 0; i < cart.cartitems.length; i++) {
     price += cart.cartitems[i].menuitemprice * cart.cartitems[i].qty;
   }
-  cart.price = price;
+  
+
+  cart.price = (Math.round(price * 100) / 100).toFixed(2);;
   try {
     res.send({status: "success", data:JSON.stringify(cart)});
   } catch (err) {
@@ -33,7 +35,8 @@ app.post('/cart', async (req, res) => {
         if (doc == null) res.status(404).send("No item found")
         let item = doc.toObject();
         item.qty = 1;
-        item.menuitemprice = parseFloat(parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]).toFixed(2));
+       
+        item.menuitemprice =  (Math.round(parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]).toFixed(2) * 100) / 100).toFixed(2);
         cart.cartitems.push(item);
         
       })
@@ -53,6 +56,9 @@ app.post('/cart', async (req, res) => {
 app.get('/cart/count', async (req, res) => {
   try {
     let cart = req.session.cart;
+    if(cart === null){
+      return 0;
+    }
     let count = 0;
     console.log(cart);
     if (cart.cartitems !== undefined) {

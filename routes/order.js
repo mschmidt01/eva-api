@@ -29,10 +29,12 @@ app.post('/order', async (req, res) => {
     try {
       await order.save();
       req.session.cart = null;
+      req.app.get('io').emit('event', {order:"updated"});
+
       res.send({status: 'success', data: {order: order}});
     
     } catch (err) {
-      res.status(500).send({status: 'error'});
+      res.status(500).send({status: 'error', message: err.message});
     }
   });
 

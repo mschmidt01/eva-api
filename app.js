@@ -8,6 +8,8 @@ var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 var passport = require('passport')
 
+const bodyParser = require('body-parser');
+
 
 var indexRouter = require('./routes/index');
 var categoryRouter = require('./routes/category');
@@ -23,11 +25,13 @@ var cartRouter = require('./routes/cart');
 var app = express();
 
 app.use(logger('dev'));
-app.use(express.json());
+// app.use(express.json());
+//app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '100mb', extended: true}))
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true}))
 mongoose.connect('mongodb+srv://eva_user:eva-i-ss20@cluster0.vrfwg.mongodb.net/eva?retryWrites=true&w=majority', {
   useNewUrlParser: true
 });
-app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser());
 app.use(session({
   secret: 'keyboard cat',

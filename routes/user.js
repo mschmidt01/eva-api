@@ -41,7 +41,6 @@ app.post('/user', async (req, res) => {
   app.patch('/user/:id', async (req, res) => {
     try {
       const user =  await User.findByIdAndUpdate(req.params.id, req.body)
-      await User.save()
       res.send(user)
     } catch (err) {
       res.status(500).send(err)

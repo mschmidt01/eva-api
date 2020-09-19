@@ -37,7 +37,7 @@ app.post('/category', async (req, res) => {
       ContentEncoding: 'base64',
       ContentType: 'image/jpeg',
     };
-    let uploadData = s3.upload(data, function(err, data){
+    let uploadData = await s3.upload(data, function(err, data){
         if (err) { 
           console.log(err);
           console.log('Error uploading data: ', data); 
@@ -46,7 +46,7 @@ app.post('/category', async (req, res) => {
           console.log(data);
         }
         
-    });
+    }).promise();
     categoryContent.image = uploadData.Location;
   }else{
     //TODO Externe IMG-URL saven
@@ -87,7 +87,6 @@ app.post('/category', async (req, res) => {
   app.patch('/category/:id', async (req, res) => {
     try {
       const category =  await Category.findByIdAndUpdate(req.params.id, req.body)
-      //await Category.save()
       res.send(category)
     } catch (err) {
       res.status(500).send(err)

@@ -37,7 +37,6 @@ app.post('/orderitem', async (req, res) => {
   app.patch('/orderitem/:id', async (req, res) => {
     try {
       const orderitem =  await OrderItem.findByIdAndUpdate(req.params.id, req.body)
-      await OrderItem.save()
       res.send(orderitem)
     } catch (err) {
       res.status(500).send(err)

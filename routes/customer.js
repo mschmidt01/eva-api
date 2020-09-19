@@ -37,7 +37,6 @@ app.post('/customer', async (req, res) => {
   app.patch('/customer/:id', async (req, res) => {
     try {
       const customer =  await Customer.findByIdAndUpdate(req.params.id, req.body)
-      await Customer.save()
       res.send(customer)
     } catch (err) {
       res.status(500).send(err)

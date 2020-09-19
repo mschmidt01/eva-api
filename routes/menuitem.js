@@ -37,7 +37,6 @@ app.post('/menuitem', async (req, res) => {
   app.patch('/menuitem', async (req, res) => {
     try {
       const menuitem =  await MenuItem.findByIdAndUpdate(req.params.id, req.body)
-      await MenuItem.save()
       res.send(menuitem)
     } catch (err) {
       res.status(500).send(err)

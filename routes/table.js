@@ -42,10 +42,10 @@ app.post('/table', async (req, res) => {
   app.patch('/table/:id', async (req, res) => {
     try {
       const table =  await Table.findByIdAndUpdate(req.params.id, req.body)
-      await Table.save()
+      req.app.get('io').emit('event', {table:"updated"});
       res.send(table)
     } catch (err) {
-      res.status(500).send(err)
+      res.status(500).send(err.message)
     }
   })
 

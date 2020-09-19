@@ -15,6 +15,7 @@ const s3 = new AWS.S3({
 });
 
 app.get('/menuitems', async (req, res) => {
+  console.log(req.cookies);
   const menuitems = await MenuItem.find({});
 
   try {

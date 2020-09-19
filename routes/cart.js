@@ -23,37 +23,33 @@ app.post('/cart', async (req, res) => {
   try {
     let id = req.body.menuItemId;
     let cart = req.session.cart;
-    console.log("aaa", cart);
-    if (cart === null) {
-      cart = {
+    if (req.session.cart === undefined || req.session.cart === null) {
+      newCart = {
         cartitems: [],
         price: 0.0,
       };
-      cart = req.session.cart;
+      cart = newCart;
     }
-    console.log("bbb", cart);
-    let item = cart.cartitems.find(item => item._id === id);
+    let item = undefined;
+    if(cart.cartitems !== undefined){
+       item = cart.cartitems.find(item => item._id === id);
+    }
     if (item === undefined) {
       MenuItem.findById(id, function (err, doc) {
         if (doc === null) res.status(404).send("No item found")
         item = doc.toObject();
         item.qty = 1;
-        console.log("ccc", item);
         //item.menuitemprice =  (Math.round(parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]).toFixed(2) * 100) / 100).toFixed(2);
         cart.cartitems.push(item);
         req.session.cart = cart;
-        console.log("ddd", req.session.cart); 
+        res.status(200).send("item addes");
+        return;
       })
     } else {
-      console.log("111", item);
       item.qty++;
       req.session.cart = cart;
-      console.log("eee", req.session.cart); 
+      res.status(200).send("item addes");
     }
-       
-    res.send({
-      status: "success",
-    });
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -61,12 +57,12 @@ app.post('/cart', async (req, res) => {
 
 app.get('/cart/count', async (req, res) => {
   try {
+
     let cart = req.session.cart;
     if(cart === null){
       return 0;
     }
     let count = 0;
-    console.log(cart);
     if (cart.cartitems !== undefined) {
       for (let i = 0; i < cart.cartitems.length; i++) {
         let item =  cart.cartitems[i];
@@ -121,10 +117,8 @@ app.patch('/cart', async (req, res) => {
   filterInPlace(cart.cartitems, obj => !toDelete.has(obj._id));
   res.status(200).send();
   }else{
-    console.log(cart);
     item.qty = qty;
     req.session.cart = cart;
-    console.log(cart);
     res.status(200).send();
   }
   

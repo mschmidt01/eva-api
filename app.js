@@ -35,7 +35,7 @@ mongoose.connect('mongodb+srv://eva_user:eva-i-ss20@cluster0.vrfwg.mongodb.net/e
 //app.use(cookieParser());
 app.use(session({
   secret: 'keyboard cat',
-  resave: true,
+  //resave: true,
   cookie: { maxAge: 1000 * 60 * 24 * 14 },
   rolling: true,
   saveUninitialized: true,

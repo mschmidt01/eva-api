@@ -23,28 +23,34 @@ app.post('/cart', async (req, res) => {
   try {
     let id = req.body.menuItemId;
     let cart = req.session.cart;
-    if (cart == null) {
+    console.log("aaa", cart);
+    if (cart === null) {
       cart = {
         cartitems: [],
         price: 0.0,
       };
+      cart = req.session.cart;
     }
+    console.log("bbb", cart);
     let item = cart.cartitems.find(item => item._id === id);
-    if (item == null) {
-      await MenuItem.findById(id, function (err, doc) {
-        if (doc == null) res.status(404).send("No item found")
-        let item = doc.toObject();
+    if (item === undefined) {
+      MenuItem.findById(id, function (err, doc) {
+        if (doc === null) res.status(404).send("No item found")
+        item = doc.toObject();
         item.qty = 1;
-       
-        item.menuitemprice =  (Math.round(parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]).toFixed(2) * 100) / 100).toFixed(2);
+        console.log("ccc", item);
+        //item.menuitemprice =  (Math.round(parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]).toFixed(2) * 100) / 100).toFixed(2);
         cart.cartitems.push(item);
-        
+        req.session.cart = cart;
+        console.log("ddd", req.session.cart); 
       })
     } else {
+      console.log("111", item);
       item.qty++;
+      req.session.cart = cart;
+      console.log("eee", req.session.cart); 
     }
-    req.session.cart = cart;
-    console.log(req.session.cart);
+       
     res.send({
       status: "success",
     });

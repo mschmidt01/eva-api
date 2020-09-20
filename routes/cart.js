@@ -42,13 +42,13 @@ app.post('/cart', async (req, res) => {
         //item.menuitemprice =  (Math.round(parseFloat(item.menuitemprice.toJSON()["$numberDecimal"]).toFixed(2) * 100) / 100).toFixed(2);
         cart.cartitems.push(item);
         req.session.cart = cart;
-        res.status(200).send("item addes");
+        res.status(200).send("item added");
         return;
       })
     } else {
       item.qty++;
       req.session.cart = cart;
-      res.status(200).send("item addes");
+      res.status(200).send("item added");
     }
   } catch (err) {
     res.status(500).send(err.message);

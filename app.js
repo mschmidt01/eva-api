@@ -7,6 +7,7 @@ var cors = require("cors");
 var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 var passport = require('passport')
+require('dotenv').config()
 
 const bodyParser = require('body-parser');
 

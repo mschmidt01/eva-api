@@ -3,8 +3,8 @@ const Category = require('../models/category');
 const MenuItem = require('../models/menuitem')
 const app = express();
 const AWS = require('aws-sdk');
-const ID = 'AKIAJM3CCPJ325QNJUPQ';
-const SECRET = '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';
+const ID = process.env.AWS_ACCESS_KEY_ID;
+const SECRET = process.env.AWS_SECRET_ACCESS_KEY;
 const { v4: uuidv4 } = require('uuid');
 
 // The name of the bucket that you have created

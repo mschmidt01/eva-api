@@ -2,9 +2,9 @@ const express = require('express');
 const MenuItem = require('../models/menuitem');
 const app = express();
 const AWS = require('aws-sdk');
-const ID = 'AKIAJM3CCPJ325QNJUPQ';
+const ID = process.env.AWS_ACCESS_KEY_ID;
 const BUCKET_NAME = 'eva-image-b4d1bf14c8';
-const SECRET = 'Def7urlzGxEVeacHb5F6gZoOG/AiEXBghQnvreBr';
+const SECRET = process.env.AWS_SECRET_ACCESS_KEY;
 const { v4: uuidv4 } = require('uuid');
 const mongoose = require('mongoose');
 
